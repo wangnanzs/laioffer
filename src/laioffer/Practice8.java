@@ -23,12 +23,19 @@ public class Practice8 {
 //		System.out.println(ts.searchBST1(root, 2).val);
 //		root = ts.deleteBST1(root, 5);
 //		ts.inOrder(root);
-		IterativeTreeSolution its = new IterativeTreeSolution();
+//		IterativeTreeSolution its = new IterativeTreeSolution();
 //		its.preOrder(root);
-		its.inOrder(root);
+//		its.inOrder(root);
 //		its.postOrder(root);
-		System.out.println();
-		its.inOrder2(root);
+//		System.out.println();
+//		its.inOrder2(root);
+		MyHeap heap = new MyHeap(50);
+		for(int i = 0;i<50;i++) {
+			heap.insert(rand.nextInt(50));
+		}
+		for(int i = 0;i<50;i++) {
+			System.out.println(heap.pop());
+		}
 	}
 
 }
