@@ -10,7 +10,7 @@ public class LaiofferSlowClass {
 		// TODO Auto-generated method stub
 		int n = 9;
         System.out.println(sum(n));
-        myQueue q = new myQueue();
+//        myQueue q = new myQueue();
 //        for(int i=0;i<100;i++) {
 //        	q.offer(i);
 //        }
@@ -438,31 +438,6 @@ class laicode {
 	    else 
 	    	kth = l;
 	    return array[kth];
-	  }
-	
-	  public long fibonacci(int K) {
-	    // Write your solution here
-	    long[] table = new long[K+1];
-	    for(long item : table){
-	      item = -1;
-	    }
-	    return fib(K,table);
-	  }
-	  private long fib(int K,long[] table){
-	    if(K<=0){
-	      table[K]=0;
-	      return 0;
-	    }
-	    if(K==1){
-	      table[K] =1;
-	      return 1;
-	    }  
-	    if(table[K]!=-1)
-	      return table[K];
-	    else{
-	      table[K] = fib(K-1,table)+fib(K-2,table);
-	      return table[K];
-	    }
 	  }  
 }
 

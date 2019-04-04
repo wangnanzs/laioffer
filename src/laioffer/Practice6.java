@@ -1,5 +1,4 @@
 package laioffer;
-import java.util.*;
 public class Practice6 {
 
 	public static void main(String[] args) {

@@ -6,7 +6,12 @@ public class Practice8 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Integer[] array = new Integer[] {5,2,6,1,4};
+//		Integer[] array = new Integer[] {5,2,6,1,4};
+		Integer[] array = new Integer[100];
+		Random rand = new Random();
+		for(int i=0;i<array.length;i++) {
+			array[i] = rand.nextInt(100);
+		}
 		TreeNode root = TreeGenerator.generate(array);
 //		BSTSolution1 ts = new BSTSolution1();
 //		ts.inOrder(root);
@@ -19,8 +24,11 @@ public class Practice8 {
 //		root = ts.deleteBST1(root, 5);
 //		ts.inOrder(root);
 		IterativeTreeSolution its = new IterativeTreeSolution();
-		its.preOrder(root);
+//		its.preOrder(root);
 		its.inOrder(root);
+//		its.postOrder(root);
+		System.out.println();
+		its.inOrder2(root);
 	}
 
 }
@@ -165,11 +173,83 @@ class IterativeTreeSolution {
 				curr = curr.left;
 			}else {
 				curr = stack.pollFirst();
-				System.out.println(curr.val);
+				System.out.print(curr.val);
 				curr = curr.right;
 			}
 		}
 	}
+	public void inOrder2(TreeNode root) {
+		// Need a stack to maintain order
+		// Case1 root noder - a. go left b. print and pop stack c. go right
+		// Case2 left of prev - a. go left b. print and pop stack c. go right
+		// Case3 right of prev - a. go left b. print and pop stack c. go right
+		// Case4 return from left   print and pop stack and go right if not null
+		if(root == null) {
+			return;
+		}
+		Deque<TreeNode> stack = new ArrayDeque<>();
+		stack.offerFirst(root);
+		TreeNode prev = null;
+		while(!stack.isEmpty()) {
+			TreeNode curr = stack.peekFirst();
+			if(prev == null || curr == prev.left || curr == prev.right) {
+				if(curr.left != null) {
+					stack.offerFirst(curr.left);
+				}else{
+					System.out.print(curr.val);
+					stack.pollFirst();
+					if(curr.right != null) {
+						stack.offerFirst(curr.right);
+					}
+				}
+			}else {
+				System.out.print(curr.val);
+				stack.pollFirst();
+				if(curr.right != null) {
+					stack.offerFirst(curr.right);
+				}
+			}
+			prev = curr;
+		}
+	}
 	
 	
+	public void postOrder(TreeNode root) { //iterative
+		// Need a stack to maintain order
+		// Case1 Root node - a. go left b. go right c. print and pop stack
+		// Case2 left of prev - a. go left b. go right c. print and pop stack
+		// Case3 right of prev  a. go left b. go right c. print and pop stack
+		// Case4 return from left a. go right b. print and pop stack
+		// Case5 return from right b. print and pop stack
+		if(root == null) {
+			return;
+		}
+		Deque<TreeNode> stack = new ArrayDeque<>();
+		stack.offerFirst(root);
+		TreeNode prev = null;
+		while(!stack.isEmpty()) {
+			TreeNode curr = stack.peekFirst();
+			if(prev == null || curr == prev.left || curr == prev.right) {
+				if(curr.left != null) {
+					stack.offerFirst(curr.left);
+				}else if(curr.right != null) {
+					stack.offerFirst(curr.right);
+				}else {
+					System.out.println(curr.val);
+					stack.pollFirst();
+				}
+			}else if(prev == curr.left) {
+				if(curr.right!=null) {
+					stack.offerFirst(curr.right);
+				}else {
+					System.out.println(curr.val);
+					stack.pollFirst();
+				}
+			}else if(prev == curr.right){
+				System.out.println(curr.val);
+				stack.pollFirst();
+			}
+			prev = curr;
+		}
+	}
 }
