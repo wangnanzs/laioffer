@@ -6,13 +6,13 @@ public class Practice8 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-//		Integer[] array = new Integer[] {5,2,6,1,4};
-		Integer[] array = new Integer[100];
-		Random rand = new Random();
+//		Integer[] array = new Integer[] {1,2,3,null,null,4,5};
+		int[] array = new int[50];
+//		Random rand = new Random();
 		for(int i=0;i<array.length;i++) {
-			array[i] = rand.nextInt(100);
+			array[i] = 49-i;
 		}
-		TreeNode root = TreeGenerator.generate(array);
+//		TreeNode root = TreeGenerator.generate(array);
 //		BSTSolution1 ts = new BSTSolution1();
 //		ts.inOrder(root);
 //		System.out.println();
@@ -27,15 +27,28 @@ public class Practice8 {
 //		its.preOrder(root);
 //		its.inOrder(root);
 //		its.postOrder(root);
-//		System.out.println();
+//		System.out.println(its.isCompleted(root));
 //		its.inOrder2(root);
-		MyHeap heap = new MyHeap(50);
-		for(int i = 0;i<50;i++) {
-			heap.insert(rand.nextInt(50));
+//		
+		MyHeap heap = new MyHeap(array);
+//		for(int i = 0;i<50;i++) {
+//			heap.insert(rand.nextInt(50));
+//		}
+//		for(int i = 0;i<50;i++) {
+//			System.out.println(heap.pop());
+//		}
+		while(!heap.isEmpty()){
+			System.out.println(heap.poll());
 		}
-		for(int i = 0;i<50;i++) {
-			System.out.println(heap.pop());
-		}
+//		int res[] = HeapSolution.smallestK(array, 80);
+//		int res1[] = HeapSolution.smallestK1(array, 80);
+//		int res2[] = HeapSolution.quickSelect(array, 80);
+//		for(int i=0;i<5;i++) {
+//			System.out.println(res[i]);
+//			System.out.println(res1[i]);
+//			System.out.println(res2[i]);
+//		}
+		
 	}
 
 }
@@ -259,4 +272,32 @@ class IterativeTreeSolution {
 			prev = curr;
 		}
 	}
+	
+	public boolean isCompleted(TreeNode root) {
+	    // Write your solution here
+	    if(root == null){
+	      return true;
+	    }
+	    Queue<TreeNode> queue = new LinkedList<>();
+	    queue.offer(root);
+	    boolean seenNull = false;
+	    while(!queue.isEmpty()){
+	      TreeNode curr = queue.poll();
+	      if(curr.left != null && !seenNull){
+	        queue.offer(curr.left);
+	      }else if(curr.left == null){
+	        seenNull = true;
+	      }else{
+	        return false;
+	      }
+	      if(curr.right != null && !seenNull){
+	        queue.offer(curr.right);
+	      }else if(curr.right == null){
+	        seenNull = true;
+	      }else{
+	        return false;
+	      }
+	    }
+	    return true;
+	  }
 }
