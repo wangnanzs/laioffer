@@ -3,18 +3,31 @@ package laioffer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Collections;
+
 
 public class DFS {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		List<String> result = DFSSolution.permutations("abc");
-		for(String s : result) {
-			System.out.println(s);
+		List<List<Integer>> result = DFSSolution.combinations(99, new int[] {25,10,5,1});
+//		Collections.sort(result);
+		for(List<Integer> ls : result) {
+			System.out.println(ls);
 		}
-//		System.out.println(result.size());
+		
+		// Understanding Arrays.asList() method 
+		System.out.println(result.size());
+		Integer[] test = new Integer[] {1,2,3,4};
+		List<Integer> list = Arrays.asList(test);
+		System.out.println(test.hashCode());
+		System.out.println(list.hashCode());
+		System.out.println(list);
+		test[3] =5;
+		test[2] =5;
+		test[1] =5;
+		test[0] =5;
+		System.out.println(list);
 	}
 
 }
@@ -24,6 +37,7 @@ class DFSSolution{
 		char[] chars = set.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		subSets(chars,0,sb,ls);
+//		subSetsHasDup(chars,0,sb,ls,false);
 		return ls;
 	}
 	private static void subSets(char[] set, int level, StringBuilder sb, List<String> ls) {
@@ -35,6 +49,19 @@ class DFSSolution{
 		subSets(set,level+1,sb,ls);
 		sb = sb.deleteCharAt(sb.length()-1);
 		subSets(set,level+1,sb,ls);
+	}
+	
+	private static void subSetsHasDup(char[] set, int level, StringBuilder sb, List<String> ls, boolean right) {
+		if(level == set.length) {
+			ls.add(sb.toString());
+			return;
+		}
+		if(!right || set[level] != set[level-1]) {
+			sb = sb.append(set[level]);
+			subSetsHasDup(set,level+1,sb,ls,false);
+			sb = sb.deleteCharAt(sb.length()-1);
+		}
+		subSetsHasDup(set,level+1,sb,ls,true);
 	}
 	
 	public static List<String> validParentheses(int n) {
@@ -61,14 +88,16 @@ class DFSSolution{
 	public static List<List<Integer>> combinations(int target, int[] coins){
 		// Assume coins is not null or empty, target >=0
 		List<List<Integer>> ls = new ArrayList<>();
-		int[] sol = new int[coins.length];
+//		int[] sol = new int[coins.length];
+		Integer[] sol = new Integer[coins.length];
 		helper(target,coins,0,sol,ls);
 		return ls;
 	}
-	private static void helper(int target, int[] coins, int level, int[] sol, List<List<Integer>> ls) {
+	private static void helper(int target, int[] coins, int level, Integer[] sol, List<List<Integer>> ls) {
 		if(level == coins.length) {
 			if(target == 0) {
-			ls.add(convertIntArrayToList(sol));
+//				ls.add(convertIntArrayToList(sol));
+				ls.add(new ArrayList<Integer>(Arrays.asList(sol)));
 			}
 			return;
 		}
