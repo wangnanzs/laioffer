@@ -1,16 +1,98 @@
 package laioffer;
 
+import java.util.*;
+import java.util.List;
+
 public class StringProblem {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		StringSolution sol = new StringSolution();
 //		System.out.println(sol.strstr("abba","ba"));
-		System.out.println(sol.strstr("abcdefghijklmnopqrstuvwxyzzabcdefghijklmnopqrstu","qrstuvwxyzzabcdefghijklmnopqrstu"));
+//		int[] array = new int[] {1,2,3,4,5,6};
+//		int[] result = sol.reorder(array);
+//		for(int i : result) {
+//			System.out.println(i);
+//		}
+		List<String> result = sol.permutations("baa");
+		for(String s : result) {
+			System.out.println(s);
+		}
 	}
 
 }
 class StringSolution{
+	public List<String> permutations(String set) { // Consider duplicate characters
+		List<String> res = new ArrayList<>();
+		if(set == null) {
+			return res;
+		}
+		if(set.isEmpty()) {
+			res.add("");
+			return res;
+		}
+		char[] array = set.toCharArray();
+		helper(array,0,res);
+		return res;
+	}
+	private void helper(char[] set, int level, List<String> ls) {
+		if(level == set.length) {
+			ls.add(new String(set));
+			return;
+		}
+		Map<Character,Boolean> hm = new HashMap<>();
+		for(int i = level; i<set.length;i++) {
+			if(hm.get(set[i]) == null || !hm.get(set[i])) {
+				swap(set,level,i);
+				hm.put(set[level],true);
+				helper(set,level+1,ls);
+				swap(set,level,i);
+			}
+		}
+		
+	}
+	private void swap(char[] set, int i, int j) {
+		char tmp = set[j];
+		set[j] = set[i];
+		set[i] = tmp;
+	}
+	
+	public int[] reorder(int[] array) { // Do it in place
+		if(array == null || array.length == 0) {
+			return array;
+		}
+		if(array.length%2 == 0) {
+			convert(array,0,array.length-1);
+		}else {
+			convert(array,0,array.length-2);
+		}
+		return array;
+	}
+	private void convert(int[] array, int start, int end) {
+		if(end - start <= 1) {
+			return;
+		}
+		int n = end - start + 1;
+		int m = start + n/2 - 1;
+		int lm = start + n/4 - 1;
+		int rm = m + 1 + n/4 - 1;
+		reverse(array,lm+1,m);
+		reverse(array,m+1,rm);
+		reverse(array,lm+1,rm);
+		convert(array,start,start+2*(lm-start+1)-1);
+		convert(array,start+2*(lm-start+1),end);
+	}
+	private void reverse(int[] array, int start, int end) {
+		int i = start;
+		int j = end;
+		while(i<j) {
+			int tmp = array[j];
+			array[j] = array[i];
+			array[i] = tmp;
+			i++;
+			j--;
+		}
+	}
 	public String replace(String input, String source, String target) {
 		StringBuilder inputSet = new StringBuilder(input);
 		StringBuilder srcSet = new StringBuilder(source);
