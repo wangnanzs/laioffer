@@ -11,6 +11,72 @@ public class StringProblem {
 
 }
 class StringSolution{
+	public String replace(String input, String source, String target) {
+		StringBuilder inputSet = new StringBuilder(input);
+		StringBuilder srcSet = new StringBuilder(source);
+		StringBuilder tarSet = new StringBuilder(target);
+		if(srcSet.length() >= tarSet.length()) {
+			int i = 0;
+			for(int j=0;j<inputSet.length();) {
+				if(isMatch(inputSet,j,srcSet)) {
+					j += srcSet.length();
+					for(int k=0;k<tarSet.length();k++) {
+						inputSet.setCharAt(i++, tarSet.charAt(k));
+					}
+				}else {
+					inputSet.setCharAt(i,inputSet.charAt(j));
+					i++;
+					j++;
+				}
+			}
+			inputSet.delete(i, inputSet.length());
+			return inputSet.toString();
+		}else {
+			inputSet = inputSet.reverse();
+			srcSet = srcSet.reverse();
+			tarSet = tarSet.reverse();
+			int count = 0;
+			for(int j=0;j<inputSet.length();) {
+				if(isMatch(inputSet,j,srcSet)) {
+					count++;
+					j += srcSet.length();
+				}else {
+					j++;
+				}
+			}
+			int addition = count*(tarSet.length()-srcSet.length());
+			for(int j=0;j<addition;j++) {
+				inputSet.append(' ');
+			}
+			int i=inputSet.length()-1;
+			for(int j=inputSet.length()-1-addition;j>=0;) {
+				if(isMatch(inputSet,j-srcSet.length()+1,srcSet)) {
+					j -= srcSet.length();
+					for(int k=tarSet.length()-1;k>=0;k--) {
+						inputSet.setCharAt(i--, tarSet.charAt(k));
+					}
+				}else {
+					inputSet.setCharAt(i,inputSet.charAt(j));
+					i--;
+					j--;
+				}
+			}
+			return inputSet.reverse().toString();
+		}
+		
+	}
+	private boolean isMatch(StringBuilder input, int index, StringBuilder pattern) {
+		if(index > input.length() - pattern.length() || index < 0) {
+			return false;
+		}
+		for(int i = 0;i<pattern.length();i++) {
+			if(input.charAt(i+index) != pattern.charAt(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String removePattern(String input, String t) {
 	    // Write your solution here
 	    char[] text = input.toCharArray();
