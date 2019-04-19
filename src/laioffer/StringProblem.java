@@ -19,23 +19,45 @@ public class StringProblem {
 			System.out.println(s);
 		}
 		System.out.println(sol.decompress("a1c0b3c4"));
+		System.out.println(sol.longest("abcdebcd"));
 	}
 
 }
 class StringSolution{
+	public int longest(String input) {
+		int global_max = 0;
+		Set<Character> hs = new HashSet<>();
+		int i = 0;
+		for(int j = 0;j<input.length();) {
+			if(hs.contains(input.charAt(j))) {
+				hs.remove(input.charAt(i));
+				i++;
+			}else {
+				hs.add(input.charAt(j));
+				j++;
+				global_max = Math.max(global_max, j-i);
+			}
+		}
+		return global_max;
+	}
+	
 	public String decompress(String input) {
 		// Count how many characters in total that should be in the decompressoed string
 		// Case1 
 		// Case2 
-		int count = countTotal(input);
-		String result; 
-		if(count > input.length()) {
-//			decomLong(input);
-			result = decomShort(input);
-		}else {
-			result = decomShort(input);
+		//int count = countTotal(input);
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(int j =0;j<input.length();j++) {
+			char curr = input.charAt(j);
+			if(curr > '0' && curr <='9') {
+				char letter = input.charAt(j-1);
+				for( int k = 0;k<curr-'0';k++) {
+					sb.append(letter);
+				}
+			}
 		}
-		return result;
+		return sb.toString();
 	}
 	private String decomShort(String input) {
 		StringBuilder sb = new StringBuilder();
