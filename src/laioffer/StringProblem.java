@@ -18,10 +18,49 @@ public class StringProblem {
 		for(String s : result) {
 			System.out.println(s);
 		}
+		System.out.println(sol.decompress("a1c0b3c4"));
 	}
 
 }
 class StringSolution{
+	public String decompress(String input) {
+		// Count how many characters in total that should be in the decompressoed string
+		// Case1 
+		// Case2 
+		int count = countTotal(input);
+		String result; 
+		if(count > input.length()) {
+//			decomLong(input);
+			result = decomShort(input);
+		}else {
+			result = decomShort(input);
+		}
+		return result;
+	}
+	private String decomShort(String input) {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(int j =0;j<input.length();j++) {
+			char curr = input.charAt(j);
+			if(curr > '0' && curr <='9') {
+				char letter = input.charAt(j-1);
+				for( int k = 0;k<curr-'0';k++) {
+					sb.append(letter);
+				}
+			}
+		}
+		return sb.toString();
+	} 
+	private int countTotal(String input) {
+		int count = 0;
+		for(int i=0;i<input.length();i++) {
+			char c = input.charAt(i);
+			if(c >='0' && c <='9') {
+				count += c -'0';
+			}
+		}
+		return count;
+	}
 	public List<String> permutations(String set) { // Consider duplicate characters
 		List<String> res = new ArrayList<>();
 		if(set == null) {
