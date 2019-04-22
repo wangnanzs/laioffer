@@ -1,9 +1,8 @@
 package laioffer;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
+
+
 
 
 public class DFS {
@@ -37,7 +36,6 @@ class DFSSolution{
 		char[] chars = set.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		subSets(chars,0,sb,ls);
-//		subSetsHasDup(chars,0,sb,ls,false);
 		return ls;
 	}
 	private static void subSets(char[] set, int level, StringBuilder sb, List<String> ls) {
@@ -51,18 +49,6 @@ class DFSSolution{
 		subSets(set,level+1,sb,ls);
 	}
 	
-	private static void subSetsHasDup(char[] set, int level, StringBuilder sb, List<String> ls, boolean right) {
-		if(level == set.length) {
-			ls.add(sb.toString());
-			return;
-		}
-		if(!right || set[level] != set[level-1]) {
-			sb = sb.append(set[level]);
-			subSetsHasDup(set,level+1,sb,ls,false);
-			sb = sb.deleteCharAt(sb.length()-1);
-		}
-		subSetsHasDup(set,level+1,sb,ls,true);
-	}
 	
 	public static List<String> validParentheses(int n) {
 		List<String> ls = new ArrayList<>();
@@ -106,14 +92,14 @@ class DFSSolution{
 			helper(target-i*coins[level],coins,level+1,sol,ls);
 		}
 	}
-	private static List<Integer> convertIntArrayToList(int[] array){
-		List<Integer> result = new ArrayList<>();
-		for(int element : array) {
-			result.add(element);
-		}
-		return result;
-	}
-	
+//	private static List<Integer> convertIntArrayToList(int[] array){
+//		List<Integer> result = new ArrayList<>();
+//		for(int element : array) {
+//			result.add(element);
+//		}
+//		return result;
+//	}
+//	
 	public static List<String> permutations(String set) {
 		List<String> ls = new ArrayList<>();
 		if(set == null || set.length()==0) {
@@ -125,20 +111,20 @@ class DFSSolution{
 		helper2(set.toCharArray(),0,ls);
 		return ls;
 	}
-	private static void helper1(char[] set,int level, boolean[] used, char[] sol, List<String> ls ) {
-		if(level == set.length) {
-			ls.add(new String(sol));
-			return;
-		}
-		for(int i=0;i<set.length;i++) {
-			if(!used[i]) {
-				sol[level] = set[i];
-				used[i] = true;
-				helper1(set,level+1,used,sol,ls);
-				used[i] = false;
-			}
-		}
-	}
+//	private static void helper1(char[] set,int level, boolean[] used, char[] sol, List<String> ls ) {
+//		if(level == set.length) {
+//			ls.add(new String(sol));
+//			return;
+//		}
+//		for(int i=0;i<set.length;i++) {
+//			if(!used[i]) {
+//				sol[level] = set[i];
+//				used[i] = true;
+//				helper1(set,level+1,used,sol,ls);
+//				used[i] = false;
+//			}
+//		}
+//	}
 	private static void helper2(char[] set, int level, List<String> ls) {
 		if(level == set.length) {
 			ls.add(new String(set));
