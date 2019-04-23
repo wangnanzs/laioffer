@@ -21,7 +21,7 @@ public class MyHashMap<K,V> {
 		}
 	}
 
-	public final static int DEFAULT_CAP = 100;
+	public final static int DEFAULT_CAP = 4;
 	public final static float DEFAULT_LOAD_FACTOR = 0.75f;
 	private HashNode<K,V>[] buckets;
 	private int size;
@@ -60,40 +60,59 @@ public class MyHashMap<K,V> {
 		int hash = key.hashCode()%buckets.length;
 		return hash > 0 ? hash : -1*hash;
 	}
-	public void put(K s, V val) {
+	public V put(K s, V val) {
 		int index = hash(s);
-		HashNode n = buckets[index];
-		if(n == null) {
-			buckets[index] = new HashNode(s,val);
-			size++;
-			return;
-		}
-		HashNode prev = null;
-		while(n!=null) {
-			if(n.key.equals(s)) {
-				n.value = val;
-				return;
+		HashNode<K,V> head = buckets[index];
+		HashNode<K,V> node = head;
+		while(node!=null) {
+			if(node.key.equals(s)) {
+				V result = node.value;
+				node.value = val;
+				return result;
 			}
-			prev = n;
-			n = n.next;
+			node = node.next;
 		}
-		prev.next = new HashNode(s,val);
+		HashNode<K,V> newNode = new HashNode<K,V>(s,val);
+		newNode.next = head;
+		buckets[index] = newNode;
 		size++;
-		return;
+		if(needRehashing()) {
+			rehashing();
+		}
+		return null;
 	}
-	public Integer get(String s) {
-		int index = getHash(s);
-		HashNode n = buckets[index];
+	private boolean needRehashing() {
+		if((float)size/buckets.length >= loadFactor) {
+			return true;
+		}
+		return false;
+	}
+	private void rehashing() {
+		HashNode<K,V>[] newArray = (HashNode<K,V>[])new HashNode[2*buckets.length];
+		HashNode<K,V>[] oldArray = buckets;
+		buckets = newArray;
+		size = 0;
+		for(int i = 0;i<oldArray.length;i++) {
+			HashNode<K,V> head = oldArray[i];
+			while(head != null) {
+				put(head.key,head.value);
+				head = head.next;
+			}
+		}
+	}
+	public V get(K key) {
+		int index = hash(key);
+		HashNode<K,V> n = buckets[index];
 		while(n!=null) {
-			if(n.key.equals(s)) {
+			if(n.key.equals(key)) {
 				return n.value;
 			}
 			n = n.next;
 		}
 		return null;
 	}
-	private int getHash(String s) {
-		return s.hashCode()%buckets.length;
+	public void showBucketSize(){
+		System.out.println(buckets.length);
 	}
 }
 

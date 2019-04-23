@@ -21,6 +21,14 @@ public class StringProblem {
 		System.out.println(sol.decompress("a1c0b3c4"));
 		System.out.println(sol.longest("abcdebcd"));
 		System.out.println(Integer.valueOf("11"));
+		MyHashMap<String,Integer> mhm = new MyHashMap<>();
+		mhm.put("Tiger", 1);
+		mhm.put("Lion", 2);
+		System.out.println(mhm.get("Tiger"));
+		mhm.showBucketSize();
+		mhm.put("Leopard", 3);
+		mhm.showBucketSize();
+		System.out.println(mhm.get("Tiger"));
 	}
 
 }
