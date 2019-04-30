@@ -29,6 +29,10 @@ public class StringProblem {
 		mhm.put("Leopard", 3);
 		mhm.showBucketSize();
 		System.out.println(mhm.get("Tiger"));
+		int[] test = new int[10];
+		for(int i:test) {
+			System.out.print(i);
+		}
 	}
 
 }
