@@ -6,21 +6,23 @@ public class DP {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int[] array = new int[]{1,2,4,-10,-20,4,5,6,7,8,9};
-		int[] result;
-		result = DPsolution.largestSubArraySum(array);
-		System.out.println(result[0]);
-		System.out.println(result[1]);
-		System.out.println(result[2]);
-		int[][] matrix = new int[7][4];
-		Arrays.fill(matrix[0], 1);
-		Arrays.fill(matrix[1], 1);
-		Arrays.fill(matrix[2], 1);
-		Arrays.fill(matrix[3], 1);
-		Arrays.fill(matrix[4], 1);
-		Arrays.fill(matrix[5], 1);
-		Arrays.fill(matrix[6], 1);
-		System.out.println(DPsolution.longestX(matrix));
+//		int[] array = new int[]{1,2,4,-10,-20,4,5,6,7,8,9};
+//		int[] result;
+//		result = DPsolution.largestSubArraySum(array);
+//		System.out.println(result[0]);
+//		System.out.println(result[1]);
+//		System.out.println(result[2]);
+		int[][] matrix = new int[3][3];
+		matrix[0][0] = -1;
+		matrix[0][1] = -2;
+		matrix[0][2] = -3;
+		matrix[1][0] = -4;
+		matrix[1][1] = -3;
+		matrix[1][2] = -2;
+		matrix[2][0] = -3;
+		matrix[2][1] = 0;
+		matrix[2][2] = -1;
+		System.out.println(DPsolution.largestSubMatrix(matrix));
 	}
 }
 class DPsolution{
@@ -55,17 +57,55 @@ class DPsolution{
 		result[2] = globalRight;
 		return result;
 	}
+	//Given a matrix that contains integers, find the submatrix with the largest sum.
+	public static int largestSubMatrix(int[][] matrix) {
+		// Naive Solution
+		// for for for for 4x for loop to find n^4 rectangular matrix
+		// 2x for loop to calculate the sum of the sub matrix ,so total time complexity is O(n^6)
+		// Can use DP method to reduce calculating sum of sub matrix to O(1) --> O(n^4)
+		// Can use 2 DP to reduce the time to O(n^3)
+		int ROW = matrix.length;
+//		int COL = matrix[0].length;
+		int[][] prefixColSum = getPrefixColSum(matrix);
+		int globalMax = matrix[0][0];
+		for(int topRow = 0;topRow < ROW;topRow++) {
+			for(int botRow = topRow;botRow<ROW;botRow++) {
+				int[] temp = getSumBetween(prefixColSum,matrix,topRow,botRow);
+				int[] res = largestSubArraySum(temp);
+				globalMax = Math.max(globalMax, res[0]);
+			}
+		}
+		return globalMax;
+	}
+	private static int[] getSumBetween(int[][] M, int[][] matrix, int i,int j) {
+		int[] result = new int[M[0].length];
+		for(int k=0;k<result.length;k++) {
+			result[k] = M[j][k] - M[i][k] + matrix[i][k];
+		}
+		return result;
+	}
+	private static int[][] getPrefixColSum(int[][] matrix){
+		// DP
+		int ROW = matrix.length;
+		int COL = matrix[0].length;
+		int[][] M = new int[ROW][COL];
+		for(int i=0;i<ROW;i++) {
+			for(int j=0;j<COL;j++) {
+				M[i][j] = getValue(M,i-1,j)+matrix[i][j];
+			}
+		}
+		return M;
+	}
 	// find the longest X in a matrix
 	public static int longestX(int[][] matrix) {
 		// DP 
-//		int[][] M = new int[matrix.length][matrix[0].length];
-		// Find the longest consecutive 1s in 4 directions: top2bot, left2right, bottom2top,right2left
+		// Find the longest consecutive 1s in 4 directions: topleft2botright, topright2bottomleft,
+		// bottomleft2topright,bottomright2topleft
 		// Pre-process
 		int[][] min = findLongest(matrix);
 		int globalMax = 0;
 		for(int i=0;i<min.length;i++) {
 			for(int j=0;j<min[0].length;j++) {
-//				M[i][j] = Math.min(topleft[i][j], bottomright[i][j]);
 				globalMax = Math.max(globalMax, min[i][j]);
 			}
 		}
@@ -123,31 +163,6 @@ class DPsolution{
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<M;j++) {
 				min[i][j] = Math.min(Math.min(M1[i][j], M2[i][j]), Math.min(M3[i][j], M4[i][j]));
-			}
-		}
-		return min;
-	}
-	private static int[][] findLongestFromBottom(int[][] matrix) {
-		//DP 
-		int N = matrix.length;
-		int M = matrix[0].length;
-		int[][] right = new int[N][M];
-		int[][] bottom = new int[N][M];
-		int[][] min = new int[N][M];
-		// Base case
-//		left[0][0] = matrix[0][0];
-//		up[0][0] = matrix[0][0];
-		// Induction rule
-		for(int i=N-1;i>=0;i--) {
-			for(int j=M-1;j>=0;j--) {
-				if(matrix[i][j]==1) {
-					right[i][j] = getValue(right,i,j+1)+1;
-					bottom[i][j] = getValue(bottom,i+1,j)+1;
-				}else {
-					right[i][j] = 0;
-					bottom[i][j] = 0;
-				}
-				min[i][j] = Math.min(right[i][j], bottom[i][j]);
 			}
 		}
 		return min;
