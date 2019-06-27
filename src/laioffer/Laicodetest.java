@@ -4,56 +4,11 @@ public class Laicodetest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		ListNode a = new ListNode(1);
-		ListNode b = new ListNode(2);
-		ListNode c = new ListNode(3);
-		ListNode d = new ListNode(4);
-		ListNode e = new ListNode(5);
-		ListNode f = new ListNode(6);
-		ListNode g = new ListNode(7);
-		ListNode h = new ListNode(8);
-		ListNode i = new ListNode(9);
-		ListNode j = new ListNode(10);
-		a.next = b;
-		b.next = c;
-		c.next = d;
-		d.next = e;
-		e.next = f;
-		f.next = g;
-		g.next = h;
-		h.next = i;
-		i.next = j;
-//		j.next = null;
-		j.next = a; //Making a cycle list
 		Solution sol = new Solution();
-//		ListNode res = sol.changeOrder(a);
-//		ListNode res = sol.remove(a,8);
-//		ListNode res = sol.insertSortedCycle(a,7);
-//		ListNode curr = res;
-//		while(curr.next.value>=curr.value) {
-//			System.out.println(curr.value);
-//			curr = curr.next;
-//		}
-//		System.out.println(curr.value);
-//		List<String> ls = sol.validParentheses(5);
-//		for(String s : ls) {
-//			System.out.println(s);
-//		}
-		int[] test = new int[1000];
-		for(int idx=0;idx<test.length;idx++) {
-			Random rand = new Random();
-			test[idx] = rand.nextInt(1000);
+		List<String> res = sol.Restore("25525511135");
+		for(String s:res) {
+			System.out.println(s);
 		}
-		sol.mergeSort(test);
-		for(int element:test) {
-			System.out.println(element);
-		}
-		
-//		String s = "abc";
-//		List<String> res = sol.subSets(s);
-//		for(int n = 0; n<res.size();n++) {
-//			System.out.println(res.get(n));
-//		}
 	}
 
 }
@@ -70,6 +25,44 @@ public class Laicodetest {
 //}
 
 class Solution {
+	public List<String> Restore(String ip) {
+	    // Write your solution here
+	    StringBuilder sb = new StringBuilder();
+	    List<String> res = new ArrayList<>();
+	    ipDFS(ip,0,0,sb,res);
+	    return res;
+	  }
+	  // Index represent a dot is inserted after this index
+	  private void ipDFS(String ip, int level, int index, StringBuilder sb, List<String> list){
+	    // Base Case
+	    if(level == 4){
+	      if(sb.length()==ip.length()+4){
+	        StringBuilder tmp = new StringBuilder(sb);
+	        tmp.setLength(tmp.length()-1);
+	        list.add(tmp.toString());
+	      }
+	      return;
+	    }
+	    for(int i=index;i<index+3;i++){
+	      if(isValid(ip,index,i+1)){
+	        sb.append(ip.substring(index,i+1));
+	        sb.append(".");
+	        ipDFS(ip,level+1,i+1,sb,list);
+	        sb.setLength(sb.length()-i-2+index);
+	      }
+	    }
+	  }
+	  private boolean isValid(String ip, int left, int right){
+	    if(right-left > 3 || right>ip.length() || left < 0 || left>=right || (ip.charAt(left)=='0' && right!= left+1) ){
+	      return false;
+	    }
+	    int sum = 0;
+	    for(int i=left;i<right;i++){
+	      sum = 10*sum + ip.charAt(i) - '0';
+	    }
+	    return sum<256 && sum >=0;
+	  }
+	
 	  public void mergeSort(int[] array) {
 		  if(array==null || array.length == 0) {
 			  return;
