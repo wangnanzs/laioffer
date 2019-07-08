@@ -28,6 +28,14 @@ public class LaiofferSlowClass {
         n1.left = n2;
         n1.right = n3;
         TreeSolution ts = new TreeSolution();
+        List<Integer> inlist = new ArrayList<>();
+        List<Integer> prelist = new ArrayList<>();
+        List<Integer> postlist = new ArrayList<>();
+        ts.allOrder(n1, prelist, inlist, postlist);
+        System.out.println(inlist);
+        System.out.println(prelist);
+        System.out.println(postlist);
+        
         System.out.println(ts.getHeight(n1));    
         System.out.println(ts.countNodes(n1));  
         //Complexity of normal queue
@@ -561,6 +569,17 @@ class TreeNode{
 class TreeSolution{
 	// Time: O(n) number of nodes
 	// Space: O(height) on average ~= O(logn) for balanced tree
+	public void allOrder(TreeNode root, List<Integer> pre, List<Integer> in, List<Integer> post) {
+		// Base case
+		if(root == null) {
+			return;
+		}
+		pre.add(root.val);
+		allOrder(root.left,pre,in,post);
+		in.add(root.val);
+		allOrder(root.right,pre,in,post);
+		post.add(root.val);
+	}
 	public int getHeight(TreeNode root) {
 		if(root == null)
 			return 0;
