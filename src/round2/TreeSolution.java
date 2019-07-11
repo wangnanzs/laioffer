@@ -15,6 +15,7 @@ class TreeSolution {
 		}
 		return left == -1 ? right +1 : left +1;
 	}
+	
 	public int getDepth(TreeNode root, int target) {
 		if(root == null) {
 			return -1;
@@ -29,6 +30,7 @@ class TreeSolution {
 		}
 		return left == -1 ? right +1 : left +1;
 	}
+	
 	public List<Integer> inOrderIterative(TreeNode root){
 		/*
 		 * 1. Initialization: push left children all the way to the leftmost into stack
@@ -51,4 +53,20 @@ class TreeSolution {
 			curr = curr.left;
 		}
 	}
+	
+	// Return the TreeNode whose key is smalleset and larger than the target
+	public TreeNode smallestLargerThan(TreeNode root, int target) {
+		TreeNode res = null;
+		TreeNode curr = root;
+		while(curr != null) {
+			if(curr.key>target) {
+				res = curr;
+				curr = curr.left;
+			}else {
+				curr = curr.right;
+			}
+		}
+		return res;
+	}
+	
 }
