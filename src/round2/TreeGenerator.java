@@ -11,7 +11,7 @@ class TreeGenerator {
 				nodeArray[i] = new TreeNode(array[i]);
 				if(i>0 && i%2==1) {
 					nodeArray[(i-1)/2].left = nodeArray[i];
-				}else {
+				}else if(i>0 && i%2==0){
 					nodeArray[(i-1)/2].right = nodeArray[i];
 				}
 			}

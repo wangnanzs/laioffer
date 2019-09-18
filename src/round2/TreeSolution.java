@@ -1,6 +1,116 @@
 package round2;
 import java.util.*;
 class TreeSolution {
+	public TreeNode recover1(TreeNode root) {
+	    // Write your solution here
+	    // morris traverse
+	    if(root == null){
+	      return root;
+	    }
+	    TreeNode curr = root;
+		TreeNode prev = new TreeNode(Integer.MIN_VALUE);
+		TreeNode first = null;
+		TreeNode second = null;
+		TreeNode prevInOrder = null;
+		while(curr != null) {
+			if(curr.left == null) {
+				if(first == null && curr.key<prev.key){
+					first = prev;
+				}
+				if(first != null && curr.key<prev.key) {
+					second = curr;
+				}
+				prev = curr;
+				curr = curr.right;
+			}else {
+				prevInOrder = findPrev(curr);
+				if(prevInOrder.right == null) {
+					prevInOrder.right = curr;
+					curr = curr.left;
+				}else if(prevInOrder.right == curr) {
+					prevInOrder.right = null;
+					if(first == null && curr.key<prev.key){
+						first = prev;
+					}
+					if(first != null && curr.key<prev.key) {
+						second = curr;
+					}
+					prev = curr;
+					curr = curr.right;
+				}
+			}
+		}
+		if(second == null) {
+			return root;
+		}
+		int tmp = first.key;
+	    first.key = second.key;
+	    second.key = tmp;
+		return root;
+	}
+	// O(n) time  
+	// O(1) space
+	public void morrisTraverse(TreeNode root) {
+		if(root == null) {
+			return;
+		}
+		TreeNode curr = root;
+		TreeNode prev = null;
+		while(curr != null) {
+			if(curr.left == null) {
+				System.out.println(curr.key);
+				curr = curr.right;
+			}else {
+				prev = findPrev(curr);
+				if(prev.right == null) {
+					prev.right = curr;
+					curr = curr.left;
+				}else if(prev.right == curr) {
+					prev.right = null;
+					System.out.println(curr.key);
+					curr = curr.right;
+				}
+			}
+		}
+	}
+	private TreeNode findPrev(TreeNode root) {
+		TreeNode curr = root.left;
+		while(curr.right!= null && curr.right != root) {
+			curr = curr.right;
+		}
+		return curr;
+	}
+	public TreeNode recover(TreeNode root) {
+	    // Write your solution here
+	    // Brute force
+	    if(root == null){
+	      return null;
+	    }
+	    TreeNode[] first = new TreeNode[1];
+	    TreeNode[] second = new TreeNode[1];
+	    TreeNode[] prev = new TreeNode[1];
+	    prev[0] = new TreeNode(Integer.MIN_VALUE);
+	    inOrder(root,prev,first,second);
+	    int tmp = first[0].key;
+	    first[0].key = second[0].key;
+	    second[0].key = tmp;
+	    return root;
+	  }
+	private void inOrder(TreeNode root, TreeNode[] prev, TreeNode[] first, TreeNode[] second){
+	    if(root == null){
+	      return;
+	    }
+	    inOrder(root.left,prev,first,second);
+	    if(first[0] == null && prev[0].key > root.key){
+	      first[0] = prev[0];
+	    }
+	    if(first[0] != null && root.key < prev[0].key){
+	      second[0] = root;
+	    }
+	    prev[0] = root;
+	    inOrder(root.right,prev,first,second);
+	}
+	
 	public int getDepth(TreeNode root, TreeNode target) {
 		if(root == null) {
 			return -1;

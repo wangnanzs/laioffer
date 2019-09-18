@@ -1,6 +1,113 @@
 package round2;
 import java.util.*;
 class DFS {
+	public void solveSudoku(char[][] board) {
+        // Parse original board
+        int[][] col = new int[9][9];
+        int[][] row = new int[9][9];
+        int[][] block = new int[9][9];
+        int count = 0;
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                int blockseq = (i/3)*3+j/3;
+                if(board[i][j]!='.'){
+                	count++;
+                    int num = board[i][j] - '0';
+                    col[j][num-1] = 1;
+                    row[i][num-1] = 1;
+                    block[blockseq][num-1] = 1;
+                }
+            }
+        }
+        dfsSudoku(81-count,board,col,row,block);
+    }
+	private boolean dfsSudoku(int remaining, char[][] board, int[][] col, int[][] row, int[][] block){
+        if(remaining == 0) {
+        	return true;
+        }
+		for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.'){
+                    int blockseq = (i/3)*3+j/3;
+                    for(int k=1;k<=9;k++){
+                        if(col[j][k-1]==0 && row[i][k-1] == 0 && block[blockseq][k-1]==0){
+                        	col[j][k-1]=1;
+                            row[i][k-1] = 1;
+                            block[blockseq][k-1]=1;
+                            board[i][j] = (char)('0' + k);
+                            boolean flag = dfsSudoku(remaining-1,board,col,row,block);
+                            if(flag == true) {
+                            	return true;
+                            }
+                            board[i][j] = '.';
+                            col[j][k-1]=0;
+                            row[i][k-1] = 0;
+                            block[blockseq][k-1]=0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+	public boolean canPartitionKSubsets1(int[] nums, int k) {
+        int sum = 0;
+        for(int num:nums)sum += num;
+        if(k <= 0 || sum%k != 0)return false;
+        int[] visited = new int[nums.length];
+        return canPartition(nums, visited, 0, k, 0, 0, sum/k);
+    }
+    
+    public boolean canPartition(int[] nums, int[] visited, int start_index, int k, int cur_sum, int cur_num, int target){
+        if(k==1)return true;
+        if(cur_sum == target && cur_num>0)return canPartition(nums, visited, 0, k-1, 0, 0, target);
+        for(int i = start_index; i<nums.length; i++){
+            if(visited[i] == 0){
+                visited[i] = 1;
+                if(canPartition(nums, visited, i+1, k, cur_sum + nums[i], cur_num++, target))return true;
+                visited[i] = 0;
+            }
+        }
+        return false;
+    }
+	public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for(int i=0;i<nums.length;i++){
+            sum += nums[i];
+        }
+        if(sum%k!=0){
+            return false;
+        }
+        int target = sum/k;
+        // [i,j] in current set
+        // (j,n-1] TBD
+        return dfs(nums,nums.length-1,k,0,target);
+    }
+    private boolean dfs(int[] nums, int start, int k, int curSum, int target){
+        if(k==1){
+            return true;
+        }
+        for(int i = start;i>=0;i--){
+            boolean flag = false;
+            swap(nums,i,start);
+            int sum = curSum + nums[start];
+            if(sum == target){
+                return  dfs(nums,start-1,k-1,0,target);
+            }else if(sum<target){
+                flag =  dfs(nums,start-1,k,sum,target);
+            }
+            swap(nums,i,start);
+            if(flag == true) return flag;
+        }
+        return false;
+    }
+    private void swap(int[] nums, int i, int j){
+            int tmp = nums[i];
+            nums[i]= nums[j];
+            nums[j] = tmp;
+    }
+//	
 	
 	public List<String> subsetsOfSizeK(String set, int k){ // Time: O(2^n) Space: O(n)
 		// DFS - every level represent add or not add a certain letter
