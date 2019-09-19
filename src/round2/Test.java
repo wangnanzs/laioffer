@@ -170,9 +170,19 @@ public class Test {
 //		ts.morrisTraverse(root);
 		
 		// === Testing smallerPairs  ===
-		BinarySearch bs = new BinarySearch();
-		int[] array = new int[] {3,4,0,-1,2,0,5};
-		int res = bs.smallerPairs(array, 10);
+//		BinarySearch bs = new BinarySearch();
+//		int[] array = new int[] {3,4,0,-1,2,0,5};
+//		int res = bs.smallerPairs(array, 10);
+//		System.out.println(res);
+		
+		// === Testing countAndSay  ===
+//		StringSolution ss = new StringSolution();
+//		String res = ss.countAndSay(17);
+//		System.out.println(res);
+		
+		// === Testing canMerge  ===
+		StringSolution ss = new StringSolution();
+		boolean res = ss.canMerge("ab", "ac", "abca");
 		System.out.println(res);
 	}
 }
