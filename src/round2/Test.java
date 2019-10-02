@@ -181,8 +181,13 @@ public class Test {
 //		System.out.println(res);
 		
 		// === Testing canMerge  ===
-		StringSolution ss = new StringSolution();
-		boolean res = ss.canMerge("ab", "ac", "abca");
+//		StringSolution ss = new StringSolution();
+//		boolean res = ss.canMerge("ab", "ac", "abca");
+//		System.out.println(res);
+		
+		// === Testing reverseBits  ===
+		BitOpSolution bos = new BitOpSolution();
+		long res = bos.reverseBits(255);
 		System.out.println(res);
 	}
 }
