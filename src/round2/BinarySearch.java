@@ -225,4 +225,44 @@ class BinarySearch {
 			return -1;
 		}
 	}
+	
+	public List<Integer> postOrder(TreeNode root) {
+	    // Write your solution here
+	    List<Integer> res = new ArrayList<>();
+	    Deque<TreeNode> stack = new ArrayDeque<>();
+	    TreeNode prev = null;
+	    TreeNode curr = root;
+	    while(curr!=null || !stack.isEmpty()){
+	      if(prev==null || prev.left == curr || prev.right == curr){
+	        if(curr.left == null && curr.right == null){
+	        	res.add(curr.key);
+		        prev = curr;
+		        curr = stack.pollLast();
+	        }else if(curr.left != null){
+	          stack.offerLast(curr);
+	          prev = curr;
+	          curr = curr.left;
+	        }else{
+	        	stack.offerLast(curr);
+		          prev = curr;
+		          curr = curr.right;
+	        }
+	      }else if(prev == curr.left){
+	    	 if(curr.right != null){
+	            stack.offerLast(curr);
+	            prev = curr;
+	            curr = curr.right;
+	         }else{
+	            res.add(curr.key);
+	    		prev = curr;
+	    		curr = stack.pollLast();
+	         }
+	      }else if(prev == curr.right){
+	        res.add(curr.key);
+	        prev = curr;
+	        curr = stack.pollLast();
+	      }
+	    }
+	    return res;
+	  }
 }

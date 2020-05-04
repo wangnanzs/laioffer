@@ -1,4 +1,5 @@
 package round2;
+import java.util.*;
 
 class TreeGenerator {
 	public TreeNode generate(Integer[] array) {
@@ -17,5 +18,26 @@ class TreeGenerator {
 			}
 		}
 		return nodeArray[0];
+	}
+	public TreeNode deserialize(String input) {
+		if(input.isEmpty()) {
+			return null;
+		}
+		Deque<TreeNode> queue = new ArrayDeque<>();
+		String[] str = input.split(",");
+		TreeNode root = new TreeNode(Integer.valueOf(str[0]));
+		queue.offerLast(root);
+		for(int i=1;i<str.length;i+=2) {
+			TreeNode cur = queue.pollFirst();
+			if(!str[i].equals("#")) {
+				cur.left = new TreeNode(Integer.valueOf(str[i]));
+				queue.offerLast(cur.left);
+			}
+			if(!str[i+1].equals("#")) {
+				cur.right = new TreeNode(Integer.valueOf(str[i+1]));
+				queue.offerLast(cur.right);
+			}
+		}
+		return root;
 	}
 }

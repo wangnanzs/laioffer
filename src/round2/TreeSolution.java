@@ -235,37 +235,28 @@ class TreeSolution {
 	}
 	
 	//Verify pre-order serialization is valid
-	public boolean isValidSerialization(String preOrder) {
-		// Use a stack to mimic recursive
-		// Case1: valid number - push 
-		// Case2: a '#' - do nothing
-		// Case3: two consecutive '#' - pop
-		// Stack top is the parent of curr
-		Deque<Integer> stack = new ArrayDeque<>();
-		if(preOrder.charAt(0)=='#') {
-			return false;
-		}else {
-			stack.offerFirst(preOrder.charAt(0)-'0');
-		}
-		char prev = preOrder.charAt(0);
-		for(int i=1;i<preOrder.length();i++) {
-			char curr = preOrder.charAt(i);
-			if(curr != '#') {
-				stack.offerFirst(curr-'0');
-				prev = curr;
-			}else if(prev!='#'){
-				prev = curr;
-			}else {
-				if(stack.isEmpty()) {
-					return false;
-				}else {
-					stack.pollFirst();
-					prev = '@';
-				}
-			}
-		}
-		return true;
-	}
+	public boolean isValidSerialization(String preorder) {
+	    if(preorder == null || preorder.length() == 0) return false;
+	    Deque<String> stack = new ArrayDeque<>();
+	    String[] array = preorder.split(",");
+	    stack.offerLast(array[0]);
+	    for(int i=1;i<array.length;i++){
+	      if(!array[i].equals("#") || stack.peekLast() == null || !stack.peekLast().equals("#")){
+	        stack.offerLast(array[i]);
+	      }else{
+	        String top = stack.peekLast();
+	        while(top!=null && top.equals("#")){
+	          stack.pollLast();
+	          if(stack.isEmpty()){
+	              return false;
+	          }
+	          top = stack.peekLast();
+	        }
+	        stack.offerLast("#");
+	      }
+	    }
+	    return stack.size() == 1 && stack.pollLast().equals("#");
+	    }
 	
 	//Ternary Expression Tree
 	public ExpNode expressionTree(String exp) {
@@ -296,4 +287,205 @@ class TreeSolution {
 		return root;
 	}
 	
+	public TreeNode findNode(TreeNode root, int value) {
+		if(root==null || root.key == value) {
+			return root;
+		}
+		TreeNode left = findNode(root.left,value);
+		TreeNode right = findNode(root.right,value);
+		return left==null? right : left;
+	}
+	
+	
+	public int[] closestKValues(TreeNode root, double target, int k) {
+	    // Write your solution here
+	    // if we have a sorted array, find the closest k values, we can binary search to find the closest first, and find the other k-1 values subsequently. O(logN + k )
+	    // Here is binary search tree, to find the closest, O(logn). 
+	    // A trick we can do here is to record the path that we get to the closest node using Stacks  :-(i don't know how to do it...
+	    List<Integer> list = new ArrayList<>();
+	    inOrder(root,list);
+	    // Binary search to find the closest
+	    int left = 0;
+	    int right = list.size()-1;
+	    while(left<right-1){
+	      int mid = left + (right-left)/2;
+	      if(list.get(mid)<=target){
+	        left = mid;
+	      }else{
+	        right = mid;
+	      }
+	    }
+	    // at this point, left or right must be point to the number closest to target
+	    //(left, right)is the result
+	    while((right<list.size() || left >=0) && right-left-1<k){
+	      if((right<list.size()&&left>=0)){
+	        if(Math.abs(list.get(left)-target) <= Math.abs(list.get(right)-target)){
+	          left--;
+	        }else {
+	          right++;
+	        }
+	      }else if(right==list.size()){
+	        left--;
+	      }else{
+	        right++;
+	      }
+	    }
+	    // Copy to int[] and return
+	    int size = Math.min(k,right-left-1);
+	    int[] res = new int[size];
+	    for(int i=0;i<size;i++){
+	      res[i] =  list.get(left+i+1);
+	    }
+	    return res;
+	  }
+	  private void inOrder(TreeNode root, List<Integer> list){
+	    if(root == null){
+	      return;
+	    }
+	    inOrder(root.left,list);
+	    list.add(root.key);
+	    inOrder(root.right,list);
+	  }
+	  
+	  public List<Integer> leftView(TreeNode root) {
+		  List<Integer> res = new ArrayList<>();
+		  while(root != null) {
+			  res.add(root.key);
+			  if(root.left != null) {
+				  root = root.left;
+			  }else {
+				  root = root.right;
+			  }  
+		  }
+		  return res;
+	  }
+	  
+	  public List<Integer> topView(TreeNode root) {
+		    // Write your solution here
+		    Map<Integer,List<Element>> map = new TreeMap<>();
+		    int[] min = new int[]{0};
+		    int[] max = new int[]{0};
+		    preprocess(root,map,0,min,max,0);
+		    List<Integer> res = new ArrayList<>();
+		    for(int i=min[0];i<=max[0];i++){
+		      Collections.sort(map.get(i));
+		      res.add(map.get(i).get(0).node.key);
+		    }
+		    return res;
+		  }
+		  private void preprocess(TreeNode root, Map<Integer,List<Element>> map, int x,int[] min, int[] max, int level){
+		    if(root == null){
+		      return;
+		    }
+		    List<Element> list = map.get(x);
+		    if(list!=null){
+		      list.add(new Element(level,root));
+		    }else{
+		      List<Element> newList = new ArrayList<>();
+		      newList.add(new Element(level,root));
+		      map.put(x,newList);
+		    }
+		    min[0] = Math.min(x,min[0]);
+		    max[0] = Math.max(x,max[0]);
+		    preprocess(root.left,map,x-1,min,max,level+1);
+		    preprocess(root.right,map,x+1,min,max,level+1);
+		  }
+		  
+		  public void preOrder(TreeNode root) {
+			  if(root == null) return;
+			  System.out.println(root.key);
+			  preOrder(root.left);	  
+			  preOrder(root.right);
+		  }
+		  
+		  public List<TreeNode> generateBSTs(int n) {
+			    List<TreeNode> res = new ArrayList<>();
+			    res = generateBSTs(1,n);
+			    return res;
+			  }
+		  private List<TreeNode> generateBSTs(int start, int end){
+			    if(start>end){
+			      return new ArrayList<>();
+			    }
+			    if(start==end){
+			      List<TreeNode> res = new ArrayList<>();
+			      res.add(new TreeNode(start));
+			      return res;
+			    }
+			    List<TreeNode> res = new ArrayList<>();
+			    for(int i=start;i<=end;i++){
+			      
+			      List<TreeNode> left = generateBSTs(start,i-1);
+			      List<TreeNode> right = generateBSTs(i+1,end);
+			      if(left.size() == 0) {
+			    	  for(TreeNode rchild : right){
+			    		  TreeNode root = new TreeNode(i);
+				          root.right = rchild;
+				          res.add(root);
+				      }
+			      }else if(right.size()==0) {
+			    	  for(TreeNode lchild : left){
+			    		  TreeNode root = new TreeNode(i);
+				          root.left = lchild;
+				          res.add(root);
+				      }
+			      }else {
+			    	  for(TreeNode lchild : left){
+			    		  for(TreeNode rchild : right){
+			    			  TreeNode root = new TreeNode(i);
+			    			  root.left = lchild;
+			    			  root.right = rchild;
+			    			  res.add(root);
+			    		  }
+			    	  }
+			      }
+			    }
+			    return res;
+			  }
+		  
+		 public TreeNode deleteSingleChildNode(TreeNode root) {
+			 if(root == null) {
+				 return root;
+			 }
+			 root.left = deleteSingleChildNode(root.left);
+			 root.right = deleteSingleChildNode(root.right);
+			 if((root.left == null && root.right == null) || (root.left !=null && root.right != null)) {
+				 return root;
+			 }
+			 return root.left == null? root.right : root.left;
+		 }
+		 public boolean isCousins(TreeNode root, TreeNode a, TreeNode b) {
+			 boolean[] res = new boolean[1];
+			 lcaLevel(root,a,b,0,res);
+			 return res[0];
+		 }
+		 private int lcaLevel(TreeNode root, TreeNode a, TreeNode b, int level, boolean[] res) {
+			 if(root == null) {
+				 return -1;
+			 }
+			 if(root==a || root == b) {
+				 return level;
+			 }
+			 int left = lcaLevel(root.left,a,b,level+1,res);
+			 int right = lcaLevel(root.right,a,b,level+1,res);
+			 if(left!=-1 && right!= -1) {
+				 if(left==right && left-level>1) {
+					 res[0] = true;
+				 }
+				 return level;
+			 }
+			 return left == -1? right: left;
+		 }
+		  
 }
+class Element implements Comparable<Element>{
+	  int y;
+	  TreeNode node;
+	  public Element(int y, TreeNode node){
+	    y = y;
+	    node = node;
+	  }
+	  public int compareTo(Element o1){
+	    return this.y - o1.y;
+	  }
+	}
